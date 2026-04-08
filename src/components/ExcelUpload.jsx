@@ -176,7 +176,7 @@ export function ExcelUpload({ onImport, existingCount }) {
           <div style={{ padding: "14px 16px", borderBottom: `1px solid ${C.stone}`, display: "flex", justifyContent: "space-between", alignItems: "center" }}>
             <div>
               <span style={{ fontSize: 12, fontWeight: 600, color: C.ink }}>{preview.length} invitados encontrados</span>
-              <span style={{ fontSize: 11, color: C.muted, marginLeft: 8 }}>({existingCount} existentes)</span>
+              <span style={{ fontSize: 11, color: C.muted, marginLeft: 8 }}>(reemplaza {existingCount} existentes)</span>
             </div>
             <div style={{ display: "flex", gap: 8 }}>
               <button onClick={handleClear}
@@ -184,8 +184,8 @@ export function ExcelUpload({ onImport, existingCount }) {
                 Cancelar
               </button>
               <button onClick={handleImport}
-                style={{ background: C.ink, color: C.white, border: "none", padding: "7px 16px", fontSize: 11, fontWeight: 500, fontFamily: "'Inter', sans-serif", cursor: "pointer" }}>
-                Importar {preview.length}
+                style={{ background: C.greenDk, color: C.white, border: "none", padding: "7px 16px", fontSize: 11, fontWeight: 500, fontFamily: "'Inter', sans-serif", cursor: "pointer" }}>
+                Reemplazar con {preview.length}
               </button>
             </div>
           </div>

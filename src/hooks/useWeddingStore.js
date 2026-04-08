@@ -1,5 +1,5 @@
-import { useState, useMemo, useCallback } from "react";
-import { SEED_FIXED, SEED_VARIABLE, SEED_GUESTS, DEFAULT_SETTINGS } from "../data/weddingData";
+import { useState, useMemo, useCallback, useEffect } from "react";
+import { SEED_FIXED, SEED_VARIABLE, SEED_GUESTS } from "../data/weddingData";
 import {
   getExpectedAttendees,
   getFixedTotal,
@@ -11,13 +11,39 @@ import {
   uid,
 } from "../utils/calculations";
 
+const STORAGE_KEY = "boda-planner-data";
+
+function loadFromStorage(key, fallback) {
+  try {
+    const saved = localStorage.getItem(STORAGE_KEY);
+    if (saved) {
+      const data = JSON.parse(saved);
+      if (data[key] !== undefined) return data[key];
+    }
+  } catch { /* ignore */ }
+  return fallback;
+}
+
+function saveToStorage(data) {
+  try {
+    localStorage.setItem(STORAGE_KEY, JSON.stringify(data));
+  } catch { /* ignore */ }
+}
+
 export function useWeddingStore() {
-  const [fixedCosts, setFixed] = useState(SEED_FIXED);
-  const [varCosts, setVar] = useState(SEED_VARIABLE);
-  const [guests, setGuests] = useState(SEED_GUESTS);
-  const [invitees, setInvitees] = useState(DEFAULT_SETTINGS.totalInvitees);
-  const [cancelRate, setCancelRate] = useState(DEFAULT_SETTINGS.cancellationRate);
-  const [contingency, setContingency] = useState(DEFAULT_SETTINGS.contingency);
+  const [fixedCosts, setFixed] = useState(() => loadFromStorage("fixedCosts", SEED_FIXED));
+  const [varCosts, setVar] = useState(() => loadFromStorage("varCosts", SEED_VARIABLE));
+  const [guests, setGuests] = useState(() => loadFromStorage("guests", SEED_GUESTS));
+  const [cancelRate, setCancelRate] = useState(() => loadFromStorage("cancelRate", 11));
+  const [contingency, setContingency] = useState(() => loadFromStorage("contingency", 5));
+
+  // Persist all data on change
+  useEffect(() => {
+    saveToStorage({ fixedCosts, varCosts, guests, cancelRate, contingency });
+  }, [fixedCosts, varCosts, guests, cancelRate, contingency]);
+
+  // Invitees = sum of all plus_one values (total headcount)
+  const invitees = useMemo(() => guests.reduce((sum, g) => sum + (Number(g.plus_one) || 1), 0), [guests]);
 
   // Derived values
   const attendees = getExpectedAttendees(invitees, cancelRate);
@@ -67,7 +93,7 @@ export function useWeddingStore() {
       ]),
     [],
   );
-  const importGuests = useCallback((newGuests) => setGuests((p) => [...p, ...newGuests]), []);
+  const importGuests = useCallback((newGuests) => setGuests(newGuests), []);
 
   // Upcoming payments
   const upcoming = useMemo(
@@ -80,17 +106,13 @@ export function useWeddingStore() {
   );
 
   return {
-    // State
     fixedCosts, varCosts, guests,
     invitees, cancelRate, contingency,
-    // Setters
-    setInvitees, setCancelRate, setContingency,
-    // Derived
+    setCancelRate, setContingency,
     attendees, fixedTotal, paidTotal, varTotal,
     subtotal, contBuffer, grandTotal, balance, perAttendee,
     catBreakdown, upcoming,
     confirmed, declined, pending, plusOnes,
-    // Mutations
     updateFixed, deleteFixed, addFixed,
     updateVar, deleteVar, addVar,
     updateGuest, deleteGuest, addGuest, importGuests,
