@@ -67,6 +67,7 @@ export function useWeddingStore() {
       ]),
     [],
   );
+  const importGuests = useCallback((newGuests) => setGuests((p) => [...p, ...newGuests]), []);
 
   // Upcoming payments
   const upcoming = useMemo(
@@ -92,6 +93,6 @@ export function useWeddingStore() {
     // Mutations
     updateFixed, deleteFixed, addFixed,
     updateVar, deleteVar, addVar,
-    updateGuest, deleteGuest, addGuest,
+    updateGuest, deleteGuest, addGuest, importGuests,
   };
 }

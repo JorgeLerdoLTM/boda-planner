@@ -37,8 +37,8 @@ export function FixedCosts({ store }) {
                 <tr key={c.id} style={{ borderBottom: `1px solid ${C.cream}` }}>
                   <td style={{ padding: "10px 14px" }}><EditableCell value={c.category} onChange={(v) => updateFixed(c.id, "category", v)} placeholder="Categoria" /></td>
                   <td style={{ padding: "10px 14px" }}><EditableCell value={c.name} onChange={(v) => updateFixed(c.id, "name", v)} placeholder="Nombre" /></td>
-                  <td style={{ padding: "10px 14px", textAlign: "right" }}><EditableCell value={c.amount} onChange={(v) => updateFixed(c.id, "amount", Number(v))} type="number" /></td>
-                  <td style={{ padding: "10px 14px", textAlign: "right" }}><EditableCell value={c.paid} onChange={(v) => updateFixed(c.id, "paid", Number(v))} type="number" /></td>
+                  <td style={{ padding: "10px 14px", textAlign: "right" }}><EditableCell value={c.amount} onChange={(v) => updateFixed(c.id, "amount", Number(v))} type="number" displayFormat={fmt} /></td>
+                  <td style={{ padding: "10px 14px", textAlign: "right" }}><EditableCell value={c.paid} onChange={(v) => updateFixed(c.id, "paid", Number(v))} type="number" displayFormat={fmt} /></td>
                   <td style={{ padding: "10px 14px", textAlign: "right", fontWeight: 600, fontSize: 12, color: bal > 0 ? C.danger : C.success }}>{fmt(bal)}</td>
                   <td style={{ padding: "10px 14px" }}><EditableCell value={c.due} onChange={(v) => updateFixed(c.id, "due", v)} placeholder="YYYY-MM-DD" /></td>
                   <td style={{ padding: "10px 14px" }}><InlineSelect value={c.status} options={Object.keys(STATUS_COLORS)} onChange={(v) => updateFixed(c.id, "status", v)} colors={STATUS_COLORS} /></td>

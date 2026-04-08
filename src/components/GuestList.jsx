@@ -3,9 +3,10 @@ import { C, glassCard, RSVP_COLORS, INV_COLORS } from "../utils/theme";
 import { Pill } from "./ui/Pill";
 import { EditableCell } from "./ui/EditableCell";
 import { InlineSelect } from "./ui/InlineSelect";
+import { ExcelUpload } from "./ExcelUpload";
 
 export function GuestList({ store }) {
-  const { guests, confirmed, pending, declined, plusOnes, updateGuest, deleteGuest, addGuest } = store;
+  const { guests, confirmed, pending, declined, plusOnes, updateGuest, deleteGuest, addGuest, importGuests } = store;
 
   const [sideFilter, setSideFilter] = useState("All");
   const [rsvpFilter, setRsvpFilter] = useState("All");
@@ -43,6 +44,9 @@ export function GuestList({ store }) {
           + Invitado
         </button>
       </div>
+
+      {/* Excel Upload */}
+      <ExcelUpload onImport={importGuests} existingCount={guests.length} />
 
       {/* Filters */}
       <div style={{ display: "flex", gap: 1, marginBottom: 20 }}>

@@ -1,7 +1,7 @@
 import { useState } from "react";
 import { C } from "../../utils/theme";
 
-export function EditableCell({ value, onChange, type = "text", placeholder = "" }) {
+export function EditableCell({ value, onChange, type = "text", placeholder = "", displayFormat }) {
   const [editing, setEditing] = useState(false);
   const [val, setVal] = useState(value);
 
@@ -16,10 +16,12 @@ export function EditableCell({ value, onChange, type = "text", placeholder = "" 
     );
   }
 
+  const display = displayFormat ? displayFormat(value) : value;
+
   return (
     <span onClick={() => { setVal(value); setEditing(true); }}
       style={{ cursor: "text", display: "block", minWidth: 40, color: value ? C.ink : C.muted, fontSize: 12, fontFamily: "'Inter', sans-serif" }}>
-      {value || <span style={{ color: C.stone }}>{placeholder || "\u2014"}</span>}
+      {display || <span style={{ color: C.stone }}>{placeholder || "\u2014"}</span>}
     </span>
   );
 }

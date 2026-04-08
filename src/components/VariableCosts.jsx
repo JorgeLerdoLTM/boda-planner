@@ -45,7 +45,7 @@ export function VariableCosts({ store }) {
                     <InlineSelect value={c.applies_to} options={["attendees", "invitees"]} onChange={(v) => updateVar(c.id, "applies_to", v)}
                       colors={{ attendees: { bg: C.blueXlt, color: C.blue }, invitees: { bg: C.yellowLt, color: "#8B6914" } }} />
                   </td>
-                  <td style={{ padding: "10px 14px", textAlign: "right" }}><EditableCell value={c.unit_cost} onChange={(v) => updateVar(c.id, "unit_cost", Number(v))} type="number" /></td>
+                  <td style={{ padding: "10px 14px", textAlign: "right" }}><EditableCell value={c.unit_cost} onChange={(v) => updateVar(c.id, "unit_cost", Number(v))} type="number" displayFormat={fmt} /></td>
                   <td style={{ padding: "10px 14px", textAlign: "center" }}><EditableCell value={c.min_guests} onChange={(v) => updateVar(c.id, "min_guests", Number(v))} type="number" /></td>
                   <td style={{ padding: "10px 14px", textAlign: "right", fontWeight: 600, fontSize: 12 }}>{fmt(est)}</td>
                   <td style={{ padding: "10px 14px", maxWidth: 180 }}><EditableCell value={c.notes} onChange={(v) => updateVar(c.id, "notes", v)} placeholder="Notas" /></td>
