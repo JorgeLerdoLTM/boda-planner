@@ -66,7 +66,7 @@ function GuestCard({ g, updateGuest, deleteGuest }) {
 }
 
 export function GuestList({ store }) {
-  const { guests, confirmed, pending, declined, plusOnes, updateGuest, deleteGuest, addGuest, importGuests } = store;
+  const { guests, confirmed, pending, declined, invitees, updateGuest, deleteGuest, addGuest, importGuests } = store;
   const { isMobile } = useResponsive();
 
   const [sideFilter, setSideFilter] = useState("All");
@@ -109,11 +109,10 @@ export function GuestList({ store }) {
         <div>
           <div style={{ fontFamily: "'Playfair Display', serif", fontSize: isMobile ? 22 : 26, fontWeight: 600, color: C.ink }}>Invitados</div>
           <div style={{ display: "flex", gap: 6, marginTop: 8, flexWrap: "wrap" }}>
-            <Pill label={`${guests.length} Total`} bg={C.blueLt} color={C.blue} />
+            <Pill label={`${invitees} Total`} bg={C.blueLt} color={C.blue} />
             <Pill label={`${confirmed} Conf.`} bg="#EBF5EE" color={C.success} />
             <Pill label={`${pending} Pend.`} bg="#F5F5F5" color={C.muted} />
             <Pill label={`${declined} Decl.`} bg="#FDECEA" color={C.danger} />
-            <Pill label={`${plusOnes} +1`} bg={C.yellowLt} color="#8B6914" />
           </div>
         </div>
         <button onClick={addGuest} style={btnStyle}>+ Invitado</button>

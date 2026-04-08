@@ -11,7 +11,7 @@ export function Dashboard({ store }) {
     grandTotal, paidTotal, balance, perAttendee, attendees,
     contingency, setContingency, invitees,
     cancelRate, setCancelRate, fixedTotal, varTotal,
-    catBreakdown, guests, confirmed, pending, declined, plusOnes, upcoming,
+    catBreakdown, guests, confirmed, pending, declined, upcoming,
   } = store;
   const { isMobile } = useResponsive();
 
@@ -83,7 +83,7 @@ export function Dashboard({ store }) {
           <div style={{ fontSize: 10, letterSpacing: "0.1em", textTransform: "uppercase", color: C.muted, fontWeight: 500, marginBottom: 20 }}>Invitados</div>
           <div style={{ display: "grid", gridTemplateColumns: "1fr 1fr", gap: 1, marginBottom: 16 }}>
             {[
-              { val: guests.length, label: "Total", color: C.ink },
+              { val: invitees, label: "Total", color: C.ink },
               { val: confirmed, label: "Confirmados", color: C.success },
               { val: pending, label: "Pendientes", color: C.muted },
               { val: declined, label: "Declinados", color: C.danger },
@@ -94,7 +94,6 @@ export function Dashboard({ store }) {
               </div>
             ))}
           </div>
-          <div style={{ textAlign: "center" }}><Pill label={`${plusOnes} con +1`} bg={C.yellowLt} color="#8B6914" /></div>
         </div>
 
         {/* Upcoming */}

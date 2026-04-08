@@ -60,11 +60,10 @@ export function useWeddingStore() {
     [fixedCosts, varCosts, attendees, invitees],
   );
 
-  // RSVP counts
-  const confirmed = useMemo(() => guests.filter((g) => g.rsvp === "Confirmed").length, [guests]);
-  const declined = useMemo(() => guests.filter((g) => g.rsvp === "Declined").length, [guests]);
-  const pending = useMemo(() => guests.filter((g) => g.rsvp === "Pending").length, [guests]);
-  const plusOnes = useMemo(() => guests.filter((g) => g.plus_one >= 2).length, [guests]);
+  // RSVP counts — total headcount (sum of plus_one), not row count
+  const confirmed = useMemo(() => guests.filter((g) => g.rsvp === "Confirmed").reduce((s, g) => s + (Number(g.plus_one) || 1), 0), [guests]);
+  const declined = useMemo(() => guests.filter((g) => g.rsvp === "Declined").reduce((s, g) => s + (Number(g.plus_one) || 1), 0), [guests]);
+  const pending = useMemo(() => guests.filter((g) => g.rsvp === "Pending").reduce((s, g) => s + (Number(g.plus_one) || 1), 0), [guests]);
 
   // Fixed cost mutations
   const updateFixed = useCallback((id, key, val) => setFixed((p) => p.map((r) => (r.id === id ? { ...r, [key]: val } : r))), []);
@@ -112,7 +111,7 @@ export function useWeddingStore() {
     attendees, fixedTotal, paidTotal, varTotal,
     subtotal, contBuffer, grandTotal, balance, perAttendee,
     catBreakdown, upcoming,
-    confirmed, declined, pending, plusOnes,
+    confirmed, declined, pending,
     updateFixed, deleteFixed, addFixed,
     updateVar, deleteVar, addVar,
     updateGuest, deleteGuest, addGuest, importGuests,
