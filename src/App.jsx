@@ -1,6 +1,5 @@
 import { useState } from "react";
 import { C, TOUCH } from "./utils/theme";
-import { fmtShort } from "./utils/calculations";
 import { useResponsive } from "./hooks/useMediaQuery";
 import { useWeddingStore } from "./hooks/useWeddingStore";
 import { VineBackground } from "./components/VineBackground";
@@ -71,8 +70,8 @@ export default function App() {
         )}
 
         <div style={{ textAlign: "right" }}>
-          <div style={{ fontSize: 10, color: C.muted, letterSpacing: "0.08em", textTransform: "uppercase" }}>Total</div>
-          <div style={{ fontFamily: "'Playfair Display', serif", fontSize: isMobile ? 18 : 20, fontWeight: 600, color: C.greenDk }}>{fmtShort(store.grandTotal)}</div>
+          <div style={{ fontSize: 10, color: C.muted, letterSpacing: "0.08em", textTransform: "uppercase" }}>Invitados</div>
+          <div style={{ fontFamily: "'Playfair Display', serif", fontSize: isMobile ? 18 : 20, fontWeight: 600, color: C.greenDk }}>{store.invitees}</div>
         </div>
       </div>
 
