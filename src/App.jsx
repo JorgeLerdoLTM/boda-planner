@@ -28,18 +28,13 @@ export default function App() {
   const cloud = useCloudSync();
   const { isMobile } = useResponsive();
 
-  // Auto-load from cloud on mount
+  // Always auto-load from gist on mount (public, no auth needed)
   useEffect(() => {
     if (loaded) return;
-    const id = localStorage.getItem("boda-planner-blob-id");
-    if (id) {
-      cloud.load(id).then((data) => {
-        if (data) store.loadAll(data);
-        setLoaded(true);
-      });
-    } else {
+    cloud.load().then((data) => {
+      if (data) store.loadAll(data);
       setLoaded(true);
-    }
+    });
   }, []); // eslint-disable-line react-hooks/exhaustive-deps
 
   // Auto-save to cloud on every data change (debounced 2s)

@@ -35,7 +35,7 @@ export function SaveBar({ cloud }) {
   }
 
   const dot = { idle: C.muted, saving: C.yellow, saved: C.success, loading: C.blue, error: C.danger }[status] || C.muted;
-  const label = { idle: needsToken ? "Solo local" : "Listo", saving: "Guardando...", saved: "Sincronizado", loading: "Cargando...", error: error || "Error" }[status] || "";
+  const label = { idle: "Listo", saving: "Guardando...", saved: needsToken ? "Cargado (solo lectura)" : "Sincronizado", loading: "Cargando...", error: error || "Error" }[status] || "";
 
   return (
     <div style={{ marginBottom: 16 }}>
