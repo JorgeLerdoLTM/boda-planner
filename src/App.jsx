@@ -1,4 +1,4 @@
-import { useState, useCallback } from "react";
+import { useState, useEffect, useCallback } from "react";
 import { C, TOUCH } from "./utils/theme";
 import { useResponsive } from "./hooks/useMediaQuery";
 import { useCurrency } from "./hooks/useCurrency";
@@ -22,18 +22,29 @@ const tabs = [
 
 export default function App() {
   const [activeTab, setActiveTab] = useState("dashboard");
-  const [authorName, setAuthorName] = useState(() => localStorage.getItem("boda-author") || "");
+  const [loaded, setLoaded] = useState(false);
   const store = useWeddingStore();
   const cx = useCurrency();
   const cloud = useCloudSync();
   const { isMobile } = useResponsive();
 
-  const handleAuthorChange = (name) => {
-    setAuthorName(name);
-    localStorage.setItem("boda-author", name);
-  };
+  // Auto-load from cloud on mount
+  useEffect(() => {
+    if (loaded) return;
+    const id = localStorage.getItem("boda-planner-blob-id");
+    if (id) {
+      cloud.load(id).then((data) => {
+        if (data) store.loadAll(data);
+        setLoaded(true);
+      });
+    } else {
+      setLoaded(true);
+    }
+  }, []); // eslint-disable-line react-hooks/exhaustive-deps
 
-  const handleSave = useCallback(async () => {
+  // Auto-save to cloud on every data change (debounced 2s)
+  useEffect(() => {
+    if (!loaded || !cloud.author) return;
     const data = {
       fixedCosts: store.fixedCosts,
       varCosts: store.varCosts,
@@ -41,15 +52,17 @@ export default function App() {
       cancelRate: store.cancelRate,
       contingency: store.contingency,
     };
-    await cloud.save(data, authorName || "Anon");
-  }, [store.fixedCosts, store.varCosts, store.guests, store.cancelRate, store.contingency, cloud, authorName]);
+    cloud.autoSave(data);
+  }, [store.fixedCosts, store.varCosts, store.guests, store.cancelRate, store.contingency, loaded, cloud.author]); // eslint-disable-line react-hooks/exhaustive-deps
 
-  const handleLoad = useCallback(async (code) => {
+  // Handle connect from SaveBar
+  const handleConnect = useCallback(async (code) => {
     const data = await cloud.load(code);
-    if (data) {
-      store.loadAll(data);
-    }
+    if (data) store.loadAll(data);
   }, [cloud, store]);
+
+  // Attach onConnect to cloud for SaveBar
+  cloud.onConnect = (data) => { if (data) store.loadAll(data); };
 
   return (
     <div style={{ minHeight: "100vh", background: C.cream, fontFamily: "'Inter', sans-serif", color: C.ink, position: "relative" }}>
@@ -60,16 +73,10 @@ export default function App() {
       {/* Header */}
       <div style={{
         padding: isMobile ? `12px ${TOUCH.mobilePad}px` : "16px 40px",
-        display: "flex",
-        alignItems: "center",
-        justifyContent: "space-between",
-        borderBottom: `1px solid ${C.stone}`,
-        background: "rgba(255,255,255,0.88)",
-        backdropFilter: "blur(12px)",
-        WebkitBackdropFilter: "blur(12px)",
-        position: "sticky",
-        top: 0,
-        zIndex: 50,
+        display: "flex", alignItems: "center", justifyContent: "space-between",
+        borderBottom: `1px solid ${C.stone}`, background: "rgba(255,255,255,0.88)",
+        backdropFilter: "blur(12px)", WebkitBackdropFilter: "blur(12px)",
+        position: "sticky", top: 0, zIndex: 50,
       }}>
         <div>
           <div style={{ fontFamily: "'Playfair Display', serif", fontSize: isMobile ? 16 : 18, fontWeight: 600, color: C.greenDk }}>Lorel & Coke</div>
@@ -100,8 +107,7 @@ export default function App() {
 
       {/* Content */}
       <div style={{ maxWidth: 1200, margin: "0 auto", padding: isMobile ? `20px ${TOUCH.mobilePad}px 100px` : "32px 32px 80px", position: "relative", zIndex: 1 }}>
-        {/* Save bar */}
-        <SaveBar cloud={cloud} onSave={handleSave} onLoad={handleLoad} authorName={authorName} setAuthorName={handleAuthorChange} />
+        <SaveBar cloud={cloud} />
 
         {activeTab === "dashboard" && <Dashboard store={store} cx={cx} />}
         {activeTab === "fixed" && <FixedCosts store={store} />}
@@ -123,7 +129,7 @@ export default function App() {
                 flex: 1, padding: "8px 0", minHeight: 52, border: "none",
                 background: activeTab === t.id ? C.greenDk : "transparent",
                 color: activeTab === t.id ? C.white : C.muted,
-                fontSize: 10, fontWeight: 500, fontFamily: "'Inter', sans-serif", cursor: "pointer", letterSpacing: "0.02em",
+                fontSize: 10, fontWeight: 500, fontFamily: "'Inter', sans-serif", cursor: "pointer",
               }}>
               {t.label}
             </button>
