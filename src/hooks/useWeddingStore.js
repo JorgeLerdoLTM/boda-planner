@@ -94,6 +94,15 @@ export function useWeddingStore() {
   );
   const importGuests = useCallback((newGuests) => setGuests(newGuests), []);
 
+  // Load all data from cloud
+  const loadAll = useCallback((data) => {
+    if (data.fixedCosts) setFixed(data.fixedCosts);
+    if (data.varCosts) setVar(data.varCosts);
+    if (data.guests) setGuests(data.guests);
+    if (data.cancelRate !== undefined) setCancelRate(data.cancelRate);
+    if (data.contingency !== undefined) setContingency(data.contingency);
+  }, []);
+
   // Upcoming payments
   const upcoming = useMemo(
     () =>
@@ -114,6 +123,6 @@ export function useWeddingStore() {
     confirmed, declined, pending,
     updateFixed, deleteFixed, addFixed,
     updateVar, deleteVar, addVar,
-    updateGuest, deleteGuest, addGuest, importGuests,
+    updateGuest, deleteGuest, addGuest, importGuests, loadAll,
   };
 }
