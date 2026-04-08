@@ -1,6 +1,7 @@
 import { useState } from "react";
 import { C, TOUCH } from "./utils/theme";
 import { useResponsive } from "./hooks/useMediaQuery";
+import { useCurrency } from "./hooks/useCurrency";
 import { useWeddingStore } from "./hooks/useWeddingStore";
 import { VineBackground } from "./components/VineBackground";
 import { Dashboard } from "./components/Dashboard";
@@ -20,6 +21,7 @@ const tabs = [
 export default function App() {
   const [activeTab, setActiveTab] = useState("dashboard");
   const store = useWeddingStore();
+  const cx = useCurrency();
   const { isMobile } = useResponsive();
 
   return (
@@ -77,11 +79,11 @@ export default function App() {
 
       {/* Content */}
       <div style={{ maxWidth: 1200, margin: "0 auto", padding: isMobile ? `20px ${TOUCH.mobilePad}px 100px` : "32px 32px 80px", position: "relative", zIndex: 1 }}>
-        {activeTab === "dashboard" && <Dashboard store={store} />}
+        {activeTab === "dashboard" && <Dashboard store={store} cx={cx} />}
         {activeTab === "fixed" && <FixedCosts store={store} />}
         {activeTab === "variable" && <VariableCosts store={store} />}
         {activeTab === "guests" && <GuestList store={store} />}
-        {activeTab === "forecast" && <Forecast store={store} />}
+        {activeTab === "forecast" && <Forecast store={store} cx={cx} />}
       </div>
 
       {/* Mobile bottom tab bar */}
