@@ -56,13 +56,9 @@ export default function App() {
   }, [store.fixedCosts, store.varCosts, store.guests, store.cancelRate, store.contingency, loaded, cloud.author]); // eslint-disable-line react-hooks/exhaustive-deps
 
   // Handle connect from SaveBar
-  const handleConnect = useCallback(async (code) => {
-    const data = await cloud.load(code);
+  const handleConnect = useCallback((data) => {
     if (data) store.loadAll(data);
-  }, [cloud, store]);
-
-  // Attach onConnect to cloud for SaveBar
-  cloud.onConnect = (data) => { if (data) store.loadAll(data); };
+  }, [store]);
 
   return (
     <div style={{ minHeight: "100vh", background: C.cream, fontFamily: "'Inter', sans-serif", color: C.ink, position: "relative" }}>
@@ -107,7 +103,7 @@ export default function App() {
 
       {/* Content */}
       <div style={{ maxWidth: 1200, margin: "0 auto", padding: isMobile ? `20px ${TOUCH.mobilePad}px 100px` : "32px 32px 80px", position: "relative", zIndex: 1 }}>
-        <SaveBar cloud={cloud} />
+        <SaveBar cloud={cloud} onConnect={handleConnect} />
 
         {activeTab === "dashboard" && <Dashboard store={store} cx={cx} />}
         {activeTab === "fixed" && <FixedCosts store={store} />}

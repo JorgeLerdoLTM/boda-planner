@@ -7,7 +7,7 @@ const fmtDate = (iso) => {
   return new Date(iso).toLocaleDateString("es-MX", { day: "numeric", month: "short", hour: "2-digit", minute: "2-digit" });
 };
 
-export function SaveBar({ cloud }) {
+export function SaveBar({ cloud, onConnect }) {
   const { blobId, author, setAuthor, status, error, changelog, disconnect } = cloud;
   const [showPanel, setShowPanel] = useState(false);
   const [connectCode, setConnectCode] = useState("");
@@ -97,7 +97,7 @@ export function SaveBar({ cloud }) {
               <div style={{ display: "flex", gap: 8 }}>
                 <input value={connectCode} onChange={(e) => setConnectCode(e.target.value.trim())} placeholder="Pega el codigo aqui..."
                   style={{ border: `1px solid ${C.stone}`, padding: "8px 10px", fontSize: 11, fontFamily: "monospace", background: C.white, flex: 1, outline: "none", color: C.ink }} />
-                <button onClick={() => { if (connectCode) { cloud.load(connectCode).then((data) => { if (data && cloud.onConnect) cloud.onConnect(data); }); setShowPanel(false); setConnectCode(""); } }}
+                <button onClick={() => { if (connectCode) { cloud.load(connectCode).then((data) => { if (data && onConnect) onConnect(data); }); setShowPanel(false); setConnectCode(""); } }}
                   style={{ background: C.blue, color: C.white, border: "none", padding: "8px 14px", fontSize: 11, cursor: "pointer" }}>Conectar</button>
               </div>
             </div>
