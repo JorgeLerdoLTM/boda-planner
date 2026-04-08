@@ -28,7 +28,7 @@ export default function App() {
       <div style={{ padding: "16px 40px", display: "flex", alignItems: "center", justifyContent: "space-between", borderBottom: `1px solid ${C.stone}`, background: C.white }}>
         <div>
           <div style={{ fontFamily: "'Playfair Display', serif", fontSize: 18, fontWeight: 600, color: C.ink }}>Lorel & Coke</div>
-          <div style={{ fontSize: 10, color: C.muted, letterSpacing: "0.1em", textTransform: "uppercase", marginTop: 1 }}>Septiembre 2026</div>
+          <div style={{ fontSize: 10, color: C.muted, letterSpacing: "0.1em", textTransform: "uppercase", marginTop: 1 }}>Octubre 2026</div>
         </div>
 
         <div style={{ display: "flex", gap: 0 }}>
