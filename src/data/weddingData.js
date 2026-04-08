@@ -6,11 +6,11 @@ export const SEED_FIXED = [
   { id: "f5",  category: "Wedding Planner",     name: "Sparkle Wedding Planner",       amount: 35000,  paid: 7874.75, due: "2026-09-01", status: "Anticipo pagado", notes: "" },
   { id: "f6",  category: "Coro Misa",           name: "Renacimiento Coros y Orquesta", amount: 19062,  paid: 0,       due: "2026-09-01", status: "Cotizado",        notes: "" },
   { id: "f7",  category: "Dulces y Quesos",     name: "The Candy Station",             amount: 50150,  paid: 5000,    due: "2026-09-01", status: "Anticipo pagado", notes: "Pago Lorel 5k" },
-  { id: "f8",  category: "Argollas",            name: "TBD",                           amount: 15000,  paid: 0,       due: "2026-09-01", status: "Por Definir",     notes: "Estimado ~8-9k por argolla" },
-  { id: "f9",  category: "Detalles",            name: "Termos y Pantuflas",            amount: 5169,   paid: 0,       due: "2026-09-01", status: "Por Definir",     notes: "275 cilindros + 135 pantuflas" },
-  { id: "f10", category: "Papeleria",           name: "Diseno Invitaciones (Blanca)",  amount: 5500,   paid: 0,       due: "2026-09-01", status: "Por Definir",     notes: "Estimado basado en Andrea e Inigo" },
-  { id: "f11", category: "Vestuario",           name: "Fraq Hombres (TBD)",            amount: 35000,  paid: 0,       due: "2026-09-01", status: "Por Definir",     notes: "7 personas, estimado Moni Avila" },
-  { id: "f12", category: "Flores",              name: "Flores Iglesia (TBD)",          amount: 20000,  paid: 0,       due: "2026-09-01", status: "Por Definir",     notes: "Estimado -30% vs Inigo (Valentine's)" },
+  { id: "f8",  category: "Argollas",            name: "TBD",                           amount: 15000,  paid: 0,       due: "2026-09-01", status: "Por Definir",     notes: "Estimado ~8-9k por argolla", approx: true },
+  { id: "f9",  category: "Detalles",            name: "Termos y Pantuflas",            amount: 5169,   paid: 0,       due: "2026-09-01", status: "Por Definir",     notes: "275 cilindros + 135 pantuflas", approx: true },
+  { id: "f10", category: "Papeleria",           name: "Diseno Invitaciones (Blanca)",  amount: 5500,   paid: 0,       due: "2026-09-01", status: "Por Definir",     notes: "Estimado basado en Andrea e Inigo", approx: true },
+  { id: "f11", category: "Vestuario",           name: "Fraq Hombres (TBD)",            amount: 35000,  paid: 0,       due: "2026-09-01", status: "Por Definir",     notes: "7 personas, estimado Moni Avila", approx: true },
+  { id: "f12", category: "Flores",              name: "Flores Iglesia (TBD)",          amount: 20000,  paid: 0,       due: "2026-09-01", status: "Por Definir",     notes: "Estimado -30% vs Inigo (Valentine's)", approx: true },
   { id: "f13", category: "Mobiliario",          name: "Fundas sillas (Mayita/Eterum)", amount: 27000,  paid: 0,       due: "2026-09-01", status: "Cotizado",        notes: "200 fundas Tiffany Santorini beige" },
   { id: "f14", category: "Mobiliario",          name: "Copa verde + Plato azul",       amount: 18000,  paid: 0,       due: "2026-09-01", status: "Cotizado",        notes: "Copa verde $40 + Plato azul $50 x 200" },
   { id: "f15", category: "Flores",              name: "Decoracion (Mattiola)",         amount: 161533, paid: 0,       due: "2026-09-01", status: "Cotizado",        notes: "TBD precio final" },
@@ -20,7 +20,7 @@ export const SEED_FIXED = [
 export const SEED_VARIABLE = [
   { id: "v1", category: "Banquete", name: "Menus Mayita (costo promedio)",     applies_to: "attendees", unit_cost: 1393, min_guests: 0, notes: "Incluye tornafiestas, cocteles entrada, aguas aperol/gin/margaritas" },
   { id: "v2", category: "Banquete", name: "Refrescos, jugos, hielos (Mayita)", applies_to: "attendees", unit_cost: 108,  min_guests: 0, notes: "4 opciones de bebida sin alcohol" },
-  { id: "v3", category: "Alcohol",  name: "Barra libre Europea (benchmark)",   applies_to: "attendees", unit_cost: 365,  min_guests: 0, notes: "Promedio de 6 cotizaciones" },
+  { id: "v3", category: "Alcohol",  name: "Barra libre Europea (benchmark)",   applies_to: "attendees", unit_cost: 365,  min_guests: 0, notes: "Promedio de 6 cotizaciones", approx: true },
 ];
 
 export const SEED_GUESTS = [
