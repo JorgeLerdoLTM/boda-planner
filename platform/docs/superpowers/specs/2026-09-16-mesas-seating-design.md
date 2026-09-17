@@ -90,13 +90,17 @@ create table if not exists seating_parties (
 create index if not exists seating_parties_household_idx on seating_parties(household_id);
 
 -- Dónde se sienta cada unidad (hogar completo o parte). seat_index = primer
--- asiento; la unidad ocupa seats asientos consecutivos (circular salvo 'head').
+-- asiento; la unidad ocupa `seats` asientos consecutivos (circular salvo 'head').
+-- seats y label van congelados al sentar: la ocupación y las listas sobreviven
+-- aunque el hogar cambie de confirmación (el conflicto se marca, no se pierde).
 create table if not exists seat_assignments (
   id           uuid primary key default gen_random_uuid(),
   table_id     uuid not null references venue_tables(id) on delete cascade,
   household_id uuid not null references households(id) on delete cascade,
   party_id     uuid references seating_parties(id) on delete cascade,
   seat_index   int  not null check (seat_index >= 0),
+  seats        int  not null check (seats > 0),
+  label        text not null default '',
   created_at   timestamptz not null default now()
 );
 create unique index if not exists seat_assignments_unit_idx
