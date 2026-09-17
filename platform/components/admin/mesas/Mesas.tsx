@@ -1,12 +1,12 @@
 "use client";
-import { C, glassCard } from "@/lib/theme";
+import { C } from "@/lib/theme";
 import type { AdminStore } from "../store";
 import type { SeatingStore } from "../seating-store";
 import { InventoryStrip } from "./InventoryStrip";
 import { VenueMap } from "./VenueMap";
+import { GuestPanel } from "./GuestPanel";
 
 export function Mesas({ store, seating }: { store: AdminStore; seating: SeatingStore }) {
-  void store; // guests come in through the seating store; kept for later panels
   return (
     <div>
       {seating.notice && (
@@ -18,7 +18,7 @@ export function Mesas({ store, seating }: { store: AdminStore; seating: SeatingS
       <InventoryStrip seating={seating} />
       <div style={{ display: "flex", gap: 16, alignItems: "flex-start" }}>
         <div style={{ width: 300, flexShrink: 0 }}>
-          <div style={{ ...glassCard, padding: 16, fontSize: 12, color: C.muted }}>Invitados (siguiente paso)</div>
+          <GuestPanel store={store} seating={seating} />
         </div>
         <div style={{ flex: 1, minWidth: 0 }}>
           <VenueMap seating={seating} />
