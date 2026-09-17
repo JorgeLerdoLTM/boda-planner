@@ -1,12 +1,22 @@
 "use client";
+import { useEffect } from "react";
 import { C } from "@/lib/theme";
 import type { AdminStore } from "../store";
 import type { SeatingStore } from "../seating-store";
 import { InventoryStrip } from "./InventoryStrip";
 import { VenueMap } from "./VenueMap";
 import { GuestPanel } from "./GuestPanel";
+import { TablePanel } from "./TablePanel";
 
 export function Mesas({ store, seating }: { store: AdminStore; seating: SeatingStore }) {
+  const { selectTable } = seating;
+  // Esc deselects the table (spec §7); all hooks stay above any early return.
+  useEffect(() => {
+    const onKey = (e: KeyboardEvent) => { if (e.key === "Escape") selectTable(null); };
+    window.addEventListener("keydown", onKey);
+    return () => window.removeEventListener("keydown", onKey);
+  }, [selectTable]);
+
   return (
     <div>
       {seating.notice && (
@@ -18,7 +28,7 @@ export function Mesas({ store, seating }: { store: AdminStore; seating: SeatingS
       <InventoryStrip seating={seating} />
       <div style={{ display: "flex", gap: 16, alignItems: "flex-start" }}>
         <div style={{ width: 300, flexShrink: 0 }}>
-          <GuestPanel store={store} seating={seating} />
+          {seating.selectedTableId ? <TablePanel seating={seating} /> : <GuestPanel store={store} seating={seating} />}
         </div>
         <div style={{ flex: 1, minWidth: 0 }}>
           <VenueMap seating={seating} />
