@@ -59,7 +59,7 @@ export function TablePanel({ seating }: { seating: SeatingStore }) {
       <button onClick={() => seating.selectTable(null)} style={{ ...smallBtn, alignSelf: "flex-start", marginBottom: 8 }}>← Invitados</button>
       <div style={{ display: "flex", alignItems: "baseline", gap: 8 }}>
         <div style={{ fontFamily: "'Playfair Display', serif", fontSize: 18, color: C.greenDk }}>{title}</div>
-        <div style={{ fontSize: 11, color: C.muted }}>{SHAPE_LABEL[t.shape]} · {seated}/{t.capacity}</div>
+        <div style={{ fontSize: 11, color: C.muted }}>{t.shape === "head" ? "" : `${SHAPE_LABEL[t.shape]} · `}{seated}/{t.capacity}</div>
       </div>
       {!t.locked && (
         <div style={{ display: "flex", gap: 6, margin: "8px 0", flexWrap: "wrap" }}>
