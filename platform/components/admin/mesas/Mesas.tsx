@@ -7,6 +7,7 @@ import { InventoryStrip } from "./InventoryStrip";
 import { VenueMap } from "./VenueMap";
 import { GuestPanel } from "./GuestPanel";
 import { TablePanel } from "./TablePanel";
+import { HistoryPanel } from "./HistoryPanel";
 
 export function Mesas({ store, seating }: { store: AdminStore; seating: SeatingStore }) {
   const { selectTable } = seating;
@@ -34,6 +35,7 @@ export function Mesas({ store, seating }: { store: AdminStore; seating: SeatingS
           <VenueMap seating={seating} />
         </div>
       </div>
+      <HistoryPanel seating={seating} />
     </div>
   );
 }
