@@ -16,7 +16,7 @@ const CONFLICT_TEXT: Record<ConflictKind, string> = {
 };
 
 // One draggable seating unit (a whole 1–2 seat household, or one party).
-export function UnitCard({ u, tableLabel, conflict, onDragStartExtra }: { u: SeatUnit; tableLabel?: string; conflict?: ConflictKind; onDragStartExtra?: () => void }) {
+export function UnitCard({ u, tableLabel, conflict, onDragStartExtra, onEditGroups }: { u: SeatUnit; tableLabel?: string; conflict?: ConflictKind; onDragStartExtra?: () => void; onEditGroups?: () => void }) {
   const onDragStart = (e: RDragEvent<HTMLDivElement>) => { setDrag(e, { kind: "unit", key: u.key }); onDragStartExtra?.(); };
   return (
     <div draggable onDragStart={onDragStart} onDragEnd={clearDrag} title={conflict ? CONFLICT_TEXT[conflict] : `${u.householdName} · ${u.group}`} data-unit-key={u.key}
@@ -28,6 +28,10 @@ export function UnitCard({ u, tableLabel, conflict, onDragStartExtra }: { u: Sea
         </div>
       </div>
       {conflict && <span style={{ fontSize: 9, fontWeight: 600, color: C.danger, background: "#FAE8E5", padding: "2px 6px" }}>REVISAR</span>}
+      {onEditGroups && (
+        <button onClick={(e) => { e.stopPropagation(); onEditGroups(); }} title="Editar los grupos de este hogar" aria-label={`Editar grupos de ${u.householdName}`}
+          style={{ background: "transparent", border: `1px solid ${C.stone}`, color: C.muted, fontSize: 10, padding: "2px 6px", cursor: "pointer", fontFamily: "'Inter', sans-serif" }}>✎ grupos</button>
+      )}
       <span style={{ fontSize: 11, fontWeight: 600, color: C.greenDk, background: C.greenLt, padding: "2px 7px" }}>{u.seats}</span>
     </div>
   );
@@ -98,7 +102,10 @@ export function GuestPanel({ store, seating }: { store: AdminStore; seating: Sea
             <button onClick={() => setSplitting(g)} style={{ ...btn(true), background: C.yellowDk }}>{seating.needsSplit.get(g.id) === "actualizar" ? "Actualizar grupos" : "Definir grupos"}</button>
           </div>
         ))}
-        {units.map((u) => <UnitCard key={u.key} u={u} tableLabel={tableLabel(u)} conflict={seating.conflicts.get(u.key)} />)}
+        {units.map((u) => (
+          <UnitCard key={u.key} u={u} tableLabel={tableLabel(u)} conflict={seating.conflicts.get(u.key)}
+            onEditGroups={u.partyId ? () => { const g = confirmed.find((x) => x.id === u.householdId); if (g) setSplitting(g); } : undefined} />
+        ))}
         {units.length === 0 && pendingSplit.length === 0 && (
           <div style={{ fontSize: 12, color: C.muted, padding: 12, textAlign: "center" }}>{status === "unseated" ? "Todos los confirmados tienen mesa 🎉" : "Sin resultados"}</div>
         )}
