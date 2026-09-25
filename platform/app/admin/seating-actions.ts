@@ -209,6 +209,32 @@ async function doUnseat(role: string, unit: UnitRef, extra?: Extra): Promise<Mut
   return ok({ log });
 }
 
+// "Juntar lugares libres": close the gaps at a table so free seats sit together.
+export async function compactTableAction(tableId: string): Promise<Mutation<{ moves: { id: string; seatIndex: number }[] }>> {
+  return guarded(async (role) => {
+    const state = await sq.getSeatingState();
+    const t = state.tables.find((tb) => tb.id === tableId);
+    if (!t) return fail("Esa mesa ya no existe");
+    const numbering = numberTables(state.tables);
+    const as = state.assignments.filter((a) => a.tableId === tableId).sort((a, b) => a.seatIndex - b.seatIndex);
+    let next = 0;
+    const moves: { id: string; seatIndex: number }[] = [];
+    const logs: sq.LogEntry[] = [];
+    for (const a of as) {
+      if (a.seatIndex !== next) {
+        moves.push({ id: a.id, seatIndex: next });
+        logs.push({ role, action: "unit_moved", payload: {
+          unit: { householdId: a.householdId, partyId: a.partyId, label: a.label, seats: a.seats },
+          from: seatInfo(t, numbering, a.seatIndex, a.seats), to: seatInfo(t, numbering, next, a.seats), reason: "compact",
+        } });
+      }
+      next += a.seats;
+    }
+    if (moves.length === 0) return ok({ moves, log: [] });
+    return ok({ moves, log: await sq.compactTable(tableId, moves, logs) });
+  });
+}
+
 export async function seatUnitAction(unit: UnitRef, tableId: string, seatIndex: number | null): Promise<Mutation<{ assignment: SeatAssignment }>> {
   return guarded((role) => doSeat(role, unit, tableId, seatIndex));
 }

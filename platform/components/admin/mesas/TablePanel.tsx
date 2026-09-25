@@ -21,6 +21,7 @@ export function TablePanel({ seating }: { seating: SeatingStore }) {
   const owner = new Map<number, { a: SeatAssignment; color: string }>();
   as.forEach((a, idx) => { for (const i of runSeats(a.seatIndex, a.seats, t.capacity, circular) ?? []) owner.set(i, { a, color: CAT_COLORS[idx % CAT_COLORS.length] }); });
   const seated = as.reduce((s, a) => s + a.seats, 0);
+  const hasGaps = as.some((a, i) => a.seatIndex !== as.slice(0, i).reduce((s, x) => s + x.seats, 0));
   const title = t.shape === "head" ? "Mesa de honor" : `Mesa ${seating.numbering.get(t.id) ?? "?"}`;
 
   const positions = seatPositions(t.shape, t.rotation);
@@ -61,10 +62,11 @@ export function TablePanel({ seating }: { seating: SeatingStore }) {
         <div style={{ fontFamily: "'Playfair Display', serif", fontSize: 18, color: C.greenDk }}>{title}</div>
         <div style={{ fontSize: 11, color: C.muted }}>{t.shape === "head" ? "" : `${SHAPE_LABEL[t.shape]} · `}{seated}/{t.capacity}</div>
       </div>
-      {!t.locked && (
+      {(!t.locked || hasGaps) && (
         <div style={{ display: "flex", gap: 6, margin: "8px 0", flexWrap: "wrap" }}>
-          {t.shape === "rect" && <button onClick={() => seating.rotateTable(t.id)} style={smallBtn}>Girar 90°</button>}
-          {!confirmRemove
+          {hasGaps && <button onClick={() => seating.compactTable(t.id)} title="Recorre a todos hacia el asiento 1 para que los lugares libres queden juntos" style={smallBtn}>Juntar lugares libres</button>}
+          {!t.locked && t.shape === "rect" && <button onClick={() => seating.rotateTable(t.id)} style={smallBtn}>Girar 90°</button>}
+          {t.locked ? null : !confirmRemove
             ? <button onClick={() => (seated > 0 ? setConfirmRemove(true) : seating.removeTable(t.id))} style={{ ...smallBtn, color: C.danger, borderColor: C.danger }}>Quitar mesa</button>
             : <>
                 <span style={{ fontSize: 11, color: C.danger, alignSelf: "center" }}>¿Quitar la mesa y dejar a {as.length} grupo(s) sin mesa?</span>

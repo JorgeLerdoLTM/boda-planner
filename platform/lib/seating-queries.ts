@@ -159,6 +159,16 @@ export async function upsertAssignment(
   });
 }
 
+// Re-seats every unit at the table back to back from seat 0, keeping their order.
+export async function compactTable(tableId: string, moves: { id: string; seatIndex: number }[], logs: LogEntry[]): Promise<SeatingLogRow[]> {
+  return sql.begin(async (tx) => {
+    for (const m of moves) await tx`update seat_assignments set seat_index = ${m.seatIndex} where id = ${m.id} and table_id = ${tableId}`;
+    const out: SeatingLogRow[] = [];
+    for (const l of logs) out.push(await writeLog(tx, l));
+    return out;
+  });
+}
+
 export async function deleteAssignment(householdId: string, partyId: string | null, log: LogEntry): Promise<SeatingLogRow[]> {
   return sql.begin(async (tx) => {
     await tx`delete from seat_assignments where household_id = ${householdId} and party_id is not distinct from ${partyId}`;

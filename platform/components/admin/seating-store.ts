@@ -8,7 +8,7 @@ import {
   type Pt, type SeatAssignment, type SeatingLogRow, type SeatingState, type TableShape, type VenueTable,
 } from "@/lib/seating";
 import {
-  addTableAction, definePartiesAction, getLogAction, getSeatingStateAction, moveTableAction, removeTableAction,
+  addTableAction, compactTableAction, definePartiesAction, getLogAction, getSeatingStateAction, moveTableAction, removeTableAction,
   revertAction, rotateTableAction, seatUnitAction, setReservedAction, unseatUnitAction,
   type ActionResult, type PartyInput,
 } from "@/app/admin/seating-actions";
@@ -190,6 +190,16 @@ export function useSeatingStore(initial: SeatingState | null, guests: AdminGuest
     void run(unseatUnitAction({ householdId: a.householdId, partyId: a.partyId }));
   }, [run]);
 
+  const compactTable = useCallback((tableId: string) => {
+    const as = latest.current.assignments.filter((a) => a.tableId === tableId).sort((a, b) => a.seatIndex - b.seatIndex);
+    let next = 0;
+    const moves = new Map<string, number>();
+    for (const a of as) { if (a.seatIndex !== next) moves.set(a.id, next); next += a.seats; }
+    if (moves.size === 0) return;
+    setAssignments((p) => p.map((a) => (moves.has(a.id) ? { ...a, seatIndex: moves.get(a.id)! } : a)));
+    void run(compactTableAction(tableId));
+  }, [run]);
+
   const revert = useCallback(async (logId: number) => {
     const d = await run(revertAction(logId));
     if (d) await resync(); // the inverse may have touched anything: take the server's truth
@@ -212,7 +222,7 @@ export function useSeatingStore(initial: SeatingState | null, guests: AdminGuest
     units, needsSplit, unitByKey, assignmentByUnit, assignmentsByTable, numbering, conflicts, conflictsByTable, unseated,
     confirmedTotal, seatedTotal, placed, placedTotal, capacityTotal, emptySeats, minimum, tableName,
     setReserved, addTable, moveTableLocal, commitTableMove, rotateTable, removeTable, defineParties, seatUnit, unseatUnit,
-    revert, loadMoreLog, selectTable: setSelectedTableId, dismissNotice, dismissSaveError, resync,
+    compactTable, revert, loadMoreLog, selectTable: setSelectedTableId, dismissNotice, dismissSaveError, resync,
   };
 }
 
