@@ -14,9 +14,11 @@ export interface PartyRow { id?: string; label: string; seats: number }
 
 type Db = postgres.TransactionSql; // every log row is written inside sql.begin()
 
+// Capacity always follows the current rule per shape (lib/seating CAPACITY),
+// so a rule change applies to tables placed before it without a data fix.
 const mapTable = (r: postgres.Row): VenueTable => ({
   id: r.id, shape: r.shape as TableShape, x: Number(r.x), y: Number(r.y),
-  rotation: Number(r.rotation) === 90 ? 90 : 0, capacity: Number(r.capacity), locked: !!r.locked,
+  rotation: Number(r.rotation) === 90 ? 90 : 0, capacity: CAPACITY[r.shape as TableShape] ?? Number(r.capacity), locked: !!r.locked,
 });
 const mapParty = (r: postgres.Row): SeatingParty => ({
   id: r.id, householdId: r.household_id, label: r.label ?? "", seats: Number(r.seats), sort: Number(r.sort),
