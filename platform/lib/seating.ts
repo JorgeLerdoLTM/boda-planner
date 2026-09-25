@@ -1,6 +1,6 @@
 // Pure seating geometry & rules for the Mesas tab. No I/O — unit tested.
 // Coordinates are "plan units": the venue PDF's 960×540 space, y down.
-// Scale ≈ 13.7 units per metre (a 10-seat round top = 24.6 units ≈ 1.80 m).
+// Scale ≈ 13.7 units per metre (a round top = 24.6 units ≈ 1.80 m).
 
 import type { AdminGuestRow } from "./queries";
 import type { Side } from "./types";
@@ -72,7 +72,7 @@ export interface Rect { x0: number; y0: number; x1: number; y1: number }
 
 export const PLAN = { width: 960, height: 540 } as const;
 export const GRID = 2;
-export const CAPACITY: Record<TableShape, number> = { round: 10, square: 10, rect: 12, head: 14 };
+export const CAPACITY: Record<TableShape, number> = { round: 12, square: 10, rect: 12, head: 13 };
 export const SHAPE_LABEL: Record<TableShape, string> = { round: "Redonda", square: "Cuadrada", rect: "Rectangular", head: "Mesa de honor" };
 export const SHAPE_PLURAL: Record<Exclude<TableShape, "head">, string> = { round: "redondas", square: "cuadradas", rect: "rectangulares" };
 export const PROBLEM_MSG: Record<PlacementProblem, string> = {
@@ -92,7 +92,7 @@ export const OBSTACLES: Record<string, Rect> = {
 };
 export const BAND_THRESHOLD = 30; // numbering: rows closer than this share a band
 export const EMPTY_SEATING: SeatingState = {
-  tables: [], parties: [], assignments: [], reserved: { round: 20, square: 10, rect: 10 }, log: [],
+  tables: [], parties: [], assignments: [], reserved: { round: 20, square: 8, rect: 12 }, log: [],
 };
 
 // ── geometry ──────────────────────────────────────────────────────────────────
@@ -125,8 +125,8 @@ const rotatePt = (p: Pt, rotation: Rotation): Pt => (rotation === 90 ? { x: -p.y
 export function seatPositions(shape: TableShape, rotation: Rotation): Pt[] {
   let pts: Pt[];
   if (shape === "round") {
-    pts = Array.from({ length: 10 }, (_, i) => {
-      const a = ((-90 + i * 36) * Math.PI) / 180;
+    pts = Array.from({ length: 12 }, (_, i) => {
+      const a = ((-90 + i * 30) * Math.PI) / 180;
       return { x: 16 * Math.cos(a), y: 16 * Math.sin(a) };
     });
   } else if (shape === "square") {
@@ -144,7 +144,7 @@ export function seatPositions(shape: TableShape, rotation: Rotation): Pt[] {
       { x: -24.5, y: 0 }, // left end
     ];
   } else {
-    pts = Array.from({ length: 14 }, (_, i) => ({ x: -42 + i * (84 / 13), y: -18 }));
+    pts = Array.from({ length: 13 }, (_, i) => ({ x: -42 + i * (84 / 12), y: -18 }));
   }
   return pts.map((p) => rotatePt(p, rotation));
 }
@@ -274,12 +274,13 @@ export function buildUnits(guests: AdminGuestRow[], parties: SeatingParty[]): { 
 }
 
 // ── inventory ─────────────────────────────────────────────────────────────────
-// Cost depends only on the table count, so biggest-first (12s, then 10s) is optimal.
-export function minTables(confirmed: number, reserved: Reserved): { total: number; rect: number; tens: number; fits: boolean } {
-  if (confirmed <= 0) return { total: 0, rect: 0, tens: 0, fits: true };
-  const rect = Math.min(reserved.rect, Math.ceil(confirmed / 12));
-  const tens = Math.ceil(Math.max(0, confirmed - rect * 12) / 10);
-  return { total: rect + tens, rect, tens, fits: tens <= reserved.round + reserved.square };
+// Cost depends only on the table count, so biggest-first is optimal:
+// 12-seat tables (round + rect) before the 10-seat squares.
+export function minTables(confirmed: number, reserved: Reserved): { total: number; twelves: number; tens: number; fits: boolean } {
+  if (confirmed <= 0) return { total: 0, twelves: 0, tens: 0, fits: true };
+  const twelves = Math.min(reserved.round + reserved.rect, Math.ceil(confirmed / CAPACITY.round));
+  const tens = Math.ceil(Math.max(0, confirmed - twelves * CAPACITY.round) / CAPACITY.square);
+  return { total: twelves + tens, twelves, tens, fits: tens <= reserved.square };
 }
 
 // ── conflicts (never mutate; shown as "Revisar") ──────────────────────────────

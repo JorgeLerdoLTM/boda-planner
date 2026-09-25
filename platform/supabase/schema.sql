@@ -188,11 +188,15 @@ alter table if exists admin_credentials add column if not exists feed_seen_at ti
 -- ─────────────────────────────────────────────────────────────────────────────
 -- Inventario reservado con el proveedor (tope duro en el mapa).
 alter table if exists settings add column if not exists tables_round  int not null default 20;
-alter table if exists settings add column if not exists tables_square int not null default 10;
-alter table if exists settings add column if not exists tables_rect   int not null default 10;
+alter table if exists settings add column if not exists tables_square int not null default 8;
+alter table if exists settings add column if not exists tables_rect   int not null default 12;
 
 -- Mesas colocadas en el plano. x,y en unidades del plano (espacio 960x540 del
 -- PDF del jardín). La mesa de honor es una fila locked (no se mueve ni borra).
+-- Capacidades (2026-09-24): redonda 12, cuadrada 10, rectangular 12, honor 13.
+-- Al cambiarlas en lib/seating.ts hay que actualizar las filas existentes:
+--   update venue_tables set capacity = 12 where shape = 'round';
+--   update venue_tables set capacity = 13 where shape = 'head';
 create table if not exists venue_tables (
   id         uuid primary key default gen_random_uuid(),
   shape      text not null check (shape in ('round','square','rect','head')),

@@ -77,7 +77,7 @@ export function InventoryStrip({ seating }: { seating: SeatingStore }) {
       <Stat label="Sin mesa" value={unseated} warn={unseated > 0} />
       <Stat label="Vacíos" value={seating.emptySeats} sub="asientos en mesas colocadas" />
       <Stat label="Mesas" value={`${seating.placedTotal} · mín. ${seating.minimum.total}`}
-        sub={seating.minimum.fits ? `${seating.minimum.rect} rect. + ${seating.minimum.tens} de 10` : "la reserva no alcanza"} warn={!seating.minimum.fits} />
+        sub={seating.minimum.fits ? `${seating.minimum.twelves} de 12 + ${seating.minimum.tens} de 10` : "la reserva no alcanza"} warn={!seating.minimum.fits} />
     </div>
   );
 }

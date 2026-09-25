@@ -38,7 +38,7 @@ describe("seatPositions", () => {
   it("puts head seats in one row above the oval", () => {
     const p = seatPositions("head", 0);
     expect(p.every((s) => s.y < 0)).toBe(true);
-    expect(p[0].x).toBeLessThan(p[13].x);
+    expect(p[0].x).toBeLessThan(p[12].x);
   });
 });
 
@@ -171,11 +171,11 @@ describe("buildUnits", () => {
 });
 
 describe("minTables", () => {
-  const reserved = { round: 20, square: 10, rect: 10 };
+  const reserved = { round: 20, square: 8, rect: 12 };
   it.each([
-    [0, 0, 0, 0], [10, 1, 1, 0], [12, 1, 1, 0], [22, 2, 2, 0], [25, 3, 3, 0], [120, 10, 10, 0], [130, 11, 10, 1], [312, 30, 10, 20],
-  ])("confirmed %i → %i tables (%i rect, %i tens)", (confirmed, total, rect, tens) => {
-    expect(minTables(confirmed, reserved)).toMatchObject({ total, rect, tens, fits: true });
+    [0, 0, 0, 0], [10, 1, 1, 0], [12, 1, 1, 0], [22, 2, 2, 0], [25, 3, 3, 0], [384, 32, 32, 0], [394, 33, 32, 1], [420, 36, 32, 4],
+  ])("confirmed %i → %i tables (%i twelves, %i tens)", (confirmed, total, twelves, tens) => {
+    expect(minTables(confirmed, reserved)).toMatchObject({ total, twelves, tens, fits: true });
   });
   it("reports when the reserve is not enough", () => {
     expect(minTables(500, reserved).fits).toBe(false);
