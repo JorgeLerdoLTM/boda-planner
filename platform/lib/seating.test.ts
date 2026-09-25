@@ -24,16 +24,16 @@ describe("seatPositions", () => {
     expect(seatPositions("rect", 0)).toHaveLength(CAPACITY.rect);
     expect(seatPositions("head", 0)).toHaveLength(CAPACITY.head);
   });
-  it("puts rect seats 5 per long side plus one at each end", () => {
+  it("puts rect seats 4 per long side plus one at each end", () => {
     const p = seatPositions("rect", 0);
-    expect(p.slice(0, 5).every((s) => s.y < 0)).toBe(true); // side A above
-    expect(p[5].x).toBeGreaterThan(20); // right end
-    expect(p.slice(6, 11).every((s) => s.y > 0)).toBe(true); // side B below
-    expect(p[11].x).toBeLessThan(-20); // left end
+    expect(p.slice(0, 4).every((s) => s.y < 0)).toBe(true); // side A above
+    expect(p[4].x).toBeGreaterThan(20); // right end
+    expect(p.slice(5, 9).every((s) => s.y > 0)).toBe(true); // side B below
+    expect(p[9].x).toBeLessThan(-20); // left end
   });
   it("rotates rect seats by 90°", () => {
     const p = seatPositions("rect", 90);
-    expect(p.slice(0, 5).every((s) => s.x > 0)).toBe(true);
+    expect(p.slice(0, 4).every((s) => s.x > 0)).toBe(true);
   });
   it("puts head seats in one row above the oval", () => {
     const p = seatPositions("head", 0);
@@ -173,7 +173,7 @@ describe("buildUnits", () => {
 describe("minTables", () => {
   const reserved = { round: 20, square: 8, rect: 12 };
   it.each([
-    [0, 0, 0, 0], [10, 1, 1, 0], [12, 1, 1, 0], [22, 2, 2, 0], [25, 3, 3, 0], [384, 32, 32, 0], [394, 33, 32, 1], [420, 36, 32, 4],
+    [0, 0, 0, 0], [10, 1, 1, 0], [12, 1, 1, 0], [22, 2, 2, 0], [25, 3, 3, 0], [240, 20, 20, 0], [250, 21, 20, 1], [384, 35, 20, 15],
   ])("confirmed %i → %i tables (%i twelves, %i tens)", (confirmed, total, twelves, tens) => {
     expect(minTables(confirmed, reserved)).toMatchObject({ total, twelves, tens, fits: true });
   });

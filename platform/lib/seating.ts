@@ -72,7 +72,7 @@ export interface Rect { x0: number; y0: number; x1: number; y1: number }
 
 export const PLAN = { width: 960, height: 540 } as const;
 export const GRID = 2;
-export const CAPACITY: Record<TableShape, number> = { round: 12, square: 10, rect: 12, head: 13 };
+export const CAPACITY: Record<TableShape, number> = { round: 12, square: 10, rect: 10, head: 13 };
 export const SHAPE_LABEL: Record<TableShape, string> = { round: "Redonda", square: "Cuadrada", rect: "Rectangular", head: "Mesa de honor" };
 export const SHAPE_PLURAL: Record<Exclude<TableShape, "head">, string> = { round: "redondas", square: "cuadradas", rect: "rectangulares" };
 export const PROBLEM_MSG: Record<PlacementProblem, string> = {
@@ -138,9 +138,9 @@ export function seatPositions(shape: TableShape, rotation: Rotation): Pt[] {
     ];
   } else if (shape === "rect") {
     pts = [
-      { x: -16, y: -12 }, { x: -8, y: -12 }, { x: 0, y: -12 }, { x: 8, y: -12 }, { x: 16, y: -12 }, // side A L→R
+      { x: -13.5, y: -12 }, { x: -4.5, y: -12 }, { x: 4.5, y: -12 }, { x: 13.5, y: -12 }, // side A L→R
       { x: 24.5, y: 0 }, // right end
-      { x: 16, y: 12 }, { x: 8, y: 12 }, { x: 0, y: 12 }, { x: -8, y: 12 }, { x: -16, y: 12 }, // side B R→L
+      { x: 13.5, y: 12 }, { x: 4.5, y: 12 }, { x: -4.5, y: 12 }, { x: -13.5, y: 12 }, // side B R→L
       { x: -24.5, y: 0 }, // left end
     ];
   } else {
@@ -275,12 +275,12 @@ export function buildUnits(guests: AdminGuestRow[], parties: SeatingParty[]): { 
 
 // ── inventory ─────────────────────────────────────────────────────────────────
 // Cost depends only on the table count, so biggest-first is optimal:
-// 12-seat tables (round + rect) before the 10-seat squares.
+// 12-seat rounds before the 10-seat squares and rectangles.
 export function minTables(confirmed: number, reserved: Reserved): { total: number; twelves: number; tens: number; fits: boolean } {
   if (confirmed <= 0) return { total: 0, twelves: 0, tens: 0, fits: true };
-  const twelves = Math.min(reserved.round + reserved.rect, Math.ceil(confirmed / CAPACITY.round));
+  const twelves = Math.min(reserved.round, Math.ceil(confirmed / CAPACITY.round));
   const tens = Math.ceil(Math.max(0, confirmed - twelves * CAPACITY.round) / CAPACITY.square);
-  return { total: twelves + tens, twelves, tens, fits: tens <= reserved.square };
+  return { total: twelves + tens, twelves, tens, fits: tens <= reserved.square + reserved.rect };
 }
 
 // ── conflicts (never mutate; shown as "Revisar") ──────────────────────────────

@@ -15,7 +15,7 @@ be traced and reverted.
 Decisions already taken with Jorge:
 
 - Confirmed guests only (RSVP Confirmed, Lista 1, same rule as `store.confirmed`).
-- Seat counts: round 12, square 10, rectangular 12, head table 13 (changed by Jorge on 2026-09-24 from 10/10/12/14).
+- Seat counts: round 12, square 10, rectangular 10 (4 per long side plus one at each end), head table 13 (changed by Jorge on 2026-09-24 from 10/10/12/14).
 - Reserved with the vendor as of 2026-09-24: 20 round, 8 square, 12 rectangular.
 - Reserved with the vendor: 20 round, 10 square, 10 rectangular. Hard cap on the
   map. Cost depends only on the total number of tables, not the shape, so the

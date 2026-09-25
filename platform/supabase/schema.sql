@@ -193,7 +193,8 @@ alter table if exists settings add column if not exists tables_rect   int not nu
 
 -- Mesas colocadas en el plano. x,y en unidades del plano (espacio 960x540 del
 -- PDF del jardín). La mesa de honor es una fila locked (no se mueve ni borra).
--- Capacidades (2026-09-24): redonda 12, cuadrada 10, rectangular 12, honor 13.
+-- Capacidades (2026-09-24): redonda 12, cuadrada 10, rectangular 10, honor 13.
+-- (La capacidad efectiva se deriva de lib/seating CAPACITY al leer; la columna es informativa.)
 -- Al cambiarlas en lib/seating.ts hay que actualizar las filas existentes:
 --   update venue_tables set capacity = 12 where shape = 'round';
 --   update venue_tables set capacity = 13 where shape = 'head';
